@@ -1,5 +1,6 @@
 \documentclass[a4paper]{article}
 \usepackage{amsmath}
+\usepackage[margin=1.5cm, includefoot, footskip=30pt]{geometry}
 
 \title{Computing For Mathematics: Projectile Motion Of Darts}
 \author{Luke Sargent, Matthew Squire, Cameron Trew, Aron Russell}
@@ -7,40 +8,52 @@
 \begin{document}
 \maketitle
 
-\section{Introduction}
+\section{Abstract}
 This project has an extremely trivial goal. Simply input 3 values relating to the throw of a dart
-- tilt angle, swivel ange and initial velocity. Then output the score of which is obtained, along with the
+- tilt angle, swivel angle (both in degrees) and initial velocity (in metres per second). Then output the score of which is obtained, along with
 relevant statistics. This project involves many areas of mathematics to solve.
 Primarily Mechanics and Geometry.
-
-
-\begin{itemize}\label{Glossary Of Terms}
-    \item \(\theta_\tau = Tilt angle from the horizontal, upwards\)
-    \item \(\theta_\sigma = Swivel angle from vertical, to the right/clockwise\)
-    \item \(R_x = Range Of Dart (in x direction)\)
-    \item \(H_y = Height Of Dart (in y direction)\)
-\end{itemize}
 
 \section{Statement Of Need}
 
 \section{State Of The Field}
 
-\section{Phase I - Projectile In 2D}
-We must first consider the 2-dimensional plane (x,y) in which our dart
+\section{Phase I - Projectile In 3D}
+We must first consider the 2-dimensional plane $(x,y)$ in which our dart
 travels through. Doing, we can model the trajectory of the dart using projectile motion
-in order to obtain the range, height, and shift of the dart.We can say that air resistance of the dart is negligible.This can be done using the following equations:
+in order to obtain the range, height, and shift of the dart relative to the bullseye. We can say that air resistance of the dart is negligible. This can be done via well-known equations and kinematics: 
 
-\begin{align}
-    R_x & = \frac{v_0sin(2\theta_\tau)}{2g}\\
-    H_y & = (Range_x)tan(\theta_\tau) - \frac{g(Range_x)^2}{2v_0cos{\theta_\tau}^2}\\
-    Shift_z & = \pm\sqrt{(Range_x)^2 - (x_0 - Board)^2}
-\end{align}
+\begin{itemize}\label{Projectile Equations}
+    \item \(R_x  = \cfrac{d}{\cos \theta_\sigma}\)
+    \item \(H_y  = (R_x)\tan(\theta_\tau) - \cfrac{g(R_x)^2}{2v_0cos{\theta_\tau}^2}\)
+    \item \(Shift_z  = \pm d \tan(\theta_\sigma) \)
+\end{itemize}
+
+where
+
+\begin{itemize}\label{Glossary Of Terms}
+    \item \(\theta_\tau = \text{Tilt angle [deg] from the horizontal, upwards}\)
+    \item \(\theta_\sigma = \text{Swivel angle [deg] from vertical, to the right/clockwise}\)
+    \item \(R_x = \text{Range Of Dart [m] (in x direction)}\)
+    \item \(H_y = \text{Height Of Dart [m] (in y direction)}\)
+    \item \(Shift_z = \text{Shift of Dart [m] (in z direction)}\)
+    \item \( d = \text{distance from origin of shot to board in x direction}\)
+\end{itemize}
+
 
 \section{Phase II - Geometry Of Dartboard}
 Determining the score is precisely the same as determining the position at which the dart landed
-on the dartboard. Since we are going to obtain a position of the dart in polar form r, theta, we can
-replicate the techniques used to determine the modulus and argument of a complex number.
-However instead of being given a real and imaginary part, we are given a length in the y and z direction.
-Taking the bullseye to be the centre of origin, we apply the following to calculate r and theta:
-    
+on the dartboard. We will obtain (via the specified throw) 2 distances relative to the distance from the
+bullseye.
+
+Using these 2 values as Cartesian coordinates, we can translate the position into polar form $r, \theta $ via similar methods to determining the modulus and argument of a complex number. See the ``coordinates" class in how this was achieved. 
+
+To obtain the score, relevant intervals were created around the board relating to $r$ and $\theta$. The dartboard was divided into 20 sections for $\theta$, for each respective initial score. And also divided into 6 sections for $r$, which told you whether the score is 50, 25, the initial score, or the initial score multiplied by 2 or 3, or maybe even 0 — a complete miss. These values are crucial and depend on the physical quantitative properties of the dartboard. Currently, all of the physical dimensions of the board used in the code can be found at \textit{https://dartsavvy.com/dart-board-dimensions-and-sizes/} \cite{Dartsavvy} 
+\vspace{7px}
+\textbf{Insert visual aid here}
+
+
+\bibliographystyle{plain}
+\bibliography{bibliography.bib}
+
 \end{document}
