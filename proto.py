@@ -1,23 +1,5 @@
 import math
 
-##This is a whole rewrite of the code
-#Due to the fact that there are multiple instances where the code does note work.
-
-#The projectile class does work.
-
-#The scores class doesn't work that well in comparison.
-'''
-A lot of the code regarding the the z, y angles are always repeated in the code.
-
-Therefore the strucutre will follow this type of format.
-
-class:
-    Projectile
-
-functions:
-
-'''
-
 class Projectile:
     
     """
