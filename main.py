@@ -1,6 +1,5 @@
-import math
-from matplotlib.pyplot import show
 import pandas as pd
+import math
 
 # Creating Phase I.
 # assuming no air resistance, 
@@ -9,13 +8,20 @@ import pandas as pd
 # 1.73m is from floor to bullseye (height)
 # 2.37m is distance from throw to board (8ft)
 
-class projectile:
+class Projectile:
+    
     """
     A class for the projectile motion of the dart.
     """
+
+    ##using constructors instantiate the object which initializes
+    ##The data values to the class
+    def __init__(self,tilt_angle, swivel_angle, initial_velocity):
+        self.tilt_angle = tilt_angle
+        self.swivel_angle = swivel_angle
+        self.initial_velocity = initial_velocity
     
-    def range(swivel_angle):
-        
+    def range(self):
         """
         this is the range of the projectile assuming it hits the board at d = 8m. 
         """
@@ -23,13 +29,11 @@ class projectile:
         
         k = (math.pi / 180) ## degrees to radians converter since trig fucntions take radians
         
-        
-        return  d / (math.cos(swivel_angle * k))
+        return  d / (math.cos(self.swivel_angle * k))
     
     
     
-    def height(tilt_angle, swivel_angle, initial_velocity):
-        
+    def height(self):
         """
         this is the distance in the y-direction relative to the bullseye.
         """
@@ -38,12 +42,13 @@ class projectile:
         k = (math.pi / 180)
         
         global R_x
-        R_x = projectile.range(swivel_angle)
-
-        return (math.tan(k*tilt_angle)*R_x) - ((g * R_x**2) / (2 * (initial_velocity *  math.cos(k*tilt_angle))**2 ))   
+        R_x = Projectile.range(self.swivel_angle, self.initial_velocity)
+        
+     
+        return (math.tan(k*self.tilt_angle)*R_x) - ((g * R_x**2) / (2 * (self.initial_velocity *  math.cos(k*self.tilt_angle))**2 ))   
     
-    
-    def shift(tilt_angle, swivel_angle, initial_velocity):                                          
+    def shift(self):
+                                                 
         """
         this is the distance in the z-direction relative to the bullseye.
         """
@@ -51,33 +56,43 @@ class projectile:
         d=2.37
         k = (math.pi / 180)
        
-        if swivel_angle > 0:
-            return d * (math.tan(abs(swivel_angle*k)))
-        if swivel_angle <0:
-            return d * -(math.tan(abs(swivel_angle*k)))
-        if swivel_angle == 0 or initial_velocity ==0:
+        if self.swivel_angle > 0:
+            return d * (math.tan(abs(self.swivel_angle*k)))
+        if self.swivel_angle <0:
+            return d * -(math.tan(abs(self.swivel_angle*k)))
+        if self.swivel_angle == 0 or self.initial_velocity ==0:
             return 0
 
-class coordinates: 
-    
-    def cartesian_coordinates(tilt_angle, swivel_angle, initial_velocity):
 
-        z = projectile.shift(tilt_angle, swivel_angle, initial_velocity)
-        y = projectile.height(tilt_angle, swivel_angle, initial_velocity)
+class coordinates: 
+    ##using constructors instantiate the object which initializes
+    ##The data values to the class
+    def __init__(self,tilt_angle, swivel_angle, initial_velocity):
+        self.tilt_angle = tilt_angle
+        self.swivel_angle = swivel_angle
+        self.initial_velocity = initial_velocity
+    
+    def cartesian_coordinates(self):
+        """
+        Returns the cartesian coordinates in relation to the given tilt angle,
+        swivel angle and initial velocity.
+        """
+
+        z = Projectile.shift(self.tilt_angle, self.swivel_angle, self.initial_velocity)
+        y = Projectile.height(self.tilt_angle, self.swivel_angle, self.initial_velocity)
 
         return [z,y]
 
 
-    def theta(tilt_angle, swivel_angle, initial_velocity):
-
+    def theta(self):
         """
         this gives us our theta value used to determine score
         """
 
         k = math.pi / 180 ## this is used to counteract the radians output of the functions math does. 
 
-        z = projectile.shift(tilt_angle, swivel_angle, initial_velocity)
-        y = projectile.height(tilt_angle, swivel_angle, initial_velocity)
+        z = Projectile.shift(self.tilt_angle, self.swivel_angle, self.initial_velocity)
+        y = Projectile.height(self.tilt_angle, self.swivel_angle, self.initial_velocity)
 
         if z==0 and y>0:
             return 90
@@ -97,27 +112,27 @@ class coordinates:
             return 360 - math.atan(abs(y/z)) * (k**-1)
     
 
-    def r(tilt_angle, swivel_angle, initial_velocity):
-
+    def r(self):
         """
         this gives us our r value used to determine score
         """
 
-        z = projectile.shift(tilt_angle, swivel_angle, initial_velocity)
-        y = projectile.height(tilt_angle, swivel_angle, initial_velocity)
+        z = Projectile.shift(self.tilt_angle, self.swivel_angle, self.initial_velocity)
+        y = Projectile.height(self.tilt_angle, self.swivel_angle, self.initial_velocity)
 
         r = math.sqrt((z)**2 + (y)**2)
     
         return r 
     
-    def polar_coordinates(tilt_angle, swivel_angle, initial_velocity):
     
+    
+    def polar_coordinates(self):
         """
         this function combines the projectiles and coordinates class to create the r and theta used in the scores class.
         """
 
-        r = coordinates.r(tilt_angle, swivel_angle, initial_velocity)
-        theta = coordinates.theta(tilt_angle, swivel_angle, initial_velocity)
+        r = coordinates.r(self.tilt_angle, self.swivel_angle, self.initial_velocity)
+        theta = coordinates.theta(self.tilt_angle, self.swivel_angle, self.initial_velocity)
 
         
         return [r, theta]
@@ -175,7 +190,7 @@ class scores:
             return 6
         elif theta < 0 or theta >= 360:
             return "error"
-
+        
 
     def final_score(r, theta):
     
@@ -231,6 +246,7 @@ class scores:
             elif r >= r_6: 
                 return  0
 
+
 def dart_simulation(tilt_angle, swivel_angle, initial_velocity):
     
     """
@@ -245,25 +261,24 @@ def dart_simulation(tilt_angle, swivel_angle, initial_velocity):
     else:
         return scores.final_score(r, theta)
 
-'''
-##Simulation examples
-A = [0,0,25]
-B = [1, 2, 26]
-C = [6,7, 420]
 
-COLUMNS = ['Tilt Angle', 'Swivel Angle', 'Inital Velocity']
-simulation_writer = pd.DataFrame([A, B, C], columns=COLUMNS)
-simulation_writer.to_csv('simulation.csv', index=False)
-pd.read_csv('simulation.csv', names=COLUMNS,skiprows=[0])
-print(simulation_writer.head())
-'''
 
+projectile1 = Projectile(2,1.5,21)
+print(projectile1.range())
 
 
 def simulation_writer(tilt_angle, swivel_angle, initial_velocity, csv_file):
 
     
     #This function creates a csv file and writes the variables on a single table.
+    '''
+    #simulation_writer(0,0,25,'simulation.csv')
+
+    #task1 = simulation_writer
+    task1 = simulation_writer
+    task1.write(0,0,40,'simulation.csv')
+    task1.add(0,0,25)
+    '''
     
     Simulation1 = [tilt_angle, swivel_angle, initial_velocity, dart_simulation(tilt_angle, swivel_angle, initial_velocity)]
 
@@ -306,12 +321,3 @@ class simulation_writer:
     def show_data():
         #This function prints out the data added so far in the terminal
         print(simulation_writer.head())
-
-
-
-#simulation_writer(0,0,25,'simulation.csv')
-
-#task1 = simulation_writer
-task1 = simulation_writer
-task1.write(0,0,40,'simulation.csv')
-task1.add(0,0,25)
